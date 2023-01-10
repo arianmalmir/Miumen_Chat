@@ -1,5 +1,3 @@
-# بکاک باش
-
 from os import name
 import firebase_admin
 import threading
@@ -7,13 +5,9 @@ import pymsgbox
 
 from firebase_admin import credentials
 from firebase_admin import firestore
-from rich.console import Console
-from rich.table import Column, Table
 
 f = open("core/username.txt" , "r").read()
 Login_names = ['miumen', 'miumen haghag', 'miumen dole', 'miumen ol saltane', 'giv', 'sharifi', 'arian', 'malmir']
-
-# فرانت اراج باش
 
 import flet
 from flet import (
@@ -21,12 +15,9 @@ from flet import (
     TextField , ButtonStyle  , icons , IconButton , Stack , Image 
 )
 
-# فرانتی که موسو ازش دوری میکنه
-
 m = 0
 messages = []
 
-# صفحه ی اراج لاگین
 def Login_SignUp(page: Page):
     global m
     global messages
@@ -49,10 +40,6 @@ def Login_SignUp(page: Page):
     def Signup (e):  
         user = str(namesign.value)
 
-        # if (' ' in user) or (user.lower() in Login_names) or 'cubic' in user.lower():
-        #     pymsgbox.alert('نام کاربری آدمیزادی انتخاب کن اراج', 'افت')
-            
-        
         
         f = open("core/username.txt" , "w")
         f.write(user)
