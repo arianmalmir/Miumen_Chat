@@ -1,2 +1,4 @@
 # Miumen_Chat
-An online chat with firebase and python
+An online chat app!
+
+Py -- Js -- Dart -- ? -- Gaz -- ?
