@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:hive/hive.dart';
-import "dart:isolate";
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:persian_fonts/persian_fonts.dart';
@@ -247,7 +246,7 @@ class _ChatAppState extends State<ChatApp> {
     startLiveQuery();
   }
 
-  void test(value) {
+  void Add(value) {
     messages.add(value["text"]);
   }
 
@@ -255,7 +254,7 @@ class _ChatAppState extends State<ChatApp> {
     var sub = await liveQuery.client.subscribe(queryMessage);
     sub.on(LiveQueryEvent.create, (value) {
       print(value);
-      Isolate.spawn(test, value);
+      Add(value);
       //
     });
   }
