@@ -11,7 +11,7 @@ final List<String> senders = [];
 
 checkMessage() async {
   final QueryBuilder<ParseObject> parseQuery =
-      QueryBuilder<ParseObject>(ParseObject('Role'));
+      QueryBuilder<ParseObject>(ParseObject('Message'));
 
   final ParseResponse apiResponse = await parseQuery.query();
 
@@ -370,7 +370,6 @@ class _ChatAppState extends State<ChatApp> {
                           msg..set('sender', username);
                           msg..set('text', meesagecontroller.text);
                           await msg.save();
-                          setState(() => messages.add(meesagecontroller.text));
                           meesagecontroller.text = "";
                         },
                       ),
