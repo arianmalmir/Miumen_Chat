@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:convert';
-import 'package:hive/hive.dart';
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:persian_fonts/persian_fonts.dart';
@@ -8,6 +7,7 @@ import 'package:window_size/window_size.dart' as window_size;
 
 final List<String> messages = [];
 final List<String> senders = [];
+TextEditingController namecontroller = TextEditingController();
 
 checkMessage() async {
   final QueryBuilder<ParseObject> parseQuery =
@@ -26,14 +26,13 @@ checkMessage() async {
 }
 
 void main() async {
-  // gaz
   WidgetsFlutterBinding.ensureInitialized();
   window_size.getWindowInfo();
   final frame = Rect.fromLTWH(0, 0, 950, 690);
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     window_size.setWindowTitle('Miumen chat');
     window_size.setWindowFrame(frame);
-    window_size.setWindowMinSize(const Size(950, 690));
+    window_size.setWindowMinSize(const Size(10, 10));
     window_size.setWindowMaxSize(const Size(2000, 2000));
   }
 
@@ -48,7 +47,7 @@ void main() async {
       liveQueryUrl: 'https://miumenchat2o.b4a.io',
       debug: true);
 
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     home: LoginApp(),
   ));
 }
@@ -61,162 +60,106 @@ class LoginApp extends StatefulWidget {
 }
 
 class _LoginAppState extends State<LoginApp> {
-  TextEditingController namecontroller = TextEditingController();
-
-  createuser() async {
-    var path = Directory.current.path;
-    Hive..init(path);
-
-    var box = await Hive.openBox('Data');
-    await box.put('username', namecontroller.text);
-  }
-
   @override
   Widget build(BuildContext context) {
+    Size sizescreen = MediaQuery.of(context).size;
+
     return Scaffold(
-      body: Stack(children: [
-        Row(
-          children: [
-            Image.asset("assets/miumenbadkare.png"),
-            const SizedBox(
-              height: 200,
-            ),
-          ],
-        ),
-        Column(
-          children: [
-            const SizedBox(
-              height: 100,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  "!خوش آمدید به میومن الچت ",
-                  style: PersianFonts.Samim.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                const SizedBox(
-                  width: 150,
-                ),
-              ],
-            ),
-            Padding(
-              padding: EdgeInsets.only(right: 25, left: 500, top: 50),
-              child: TextField(
-                controller: namecontroller,
-                maxLength: 14,
-                decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    filled: true,
-                    fillColor: Color.fromARGB(255, 235, 80, 42)),
+      resizeToAvoidBottomInset: false,
+      body: Column(
+        children: [
+          const SizedBox(
+            height: 50,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 350,
+                child: Image.asset("assets/miumenah.png"),
               ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            Stack(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            width: 2, color: Color.fromARGB(150, 0, 0, 0)),
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                      height: 150,
-                      width: 420,
-                      // color: Colors.black54,
-                    ),
-                    const SizedBox(
-                      width: 30,
-                    ),
-                  ],
+            ],
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "!خوش آمدید به میومن الچت ",
+                style: PersianFonts.Samim.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
                 ),
-                Row(
-                  children: [
-                    const SizedBox(
-                      width: 550,
-                    ),
-                    Column(
-                      // ignore: prefer_const_literals_to_create_immutables
-                      children: [
-                        const SizedBox(
-                          height: 50,
-                        ),
-                        const Text(
-                          " ! میومن باش و میامی کن",
-                          style: TextStyle(
-                              fontFamily: "AFSANEH",
-                              fontWeight: FontWeight.bold,
-                              fontSize: 42),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 125,
-            ),
-            SizedBox(
-              height: 50,
-              width: 200,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(150, 197, 45, 32),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: Text(
-                  'ورود',
-                  style: PersianFonts.Samim.copyWith(fontSize: 20),
-                ),
-                onPressed: () {
-                  if (namecontroller.text == "") {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "گزازی کردی",
-                                  style: TextStyle(
-                                      fontFamily: "AFSANEH", fontSize: 20),
-                                ),
-                              ],
-                            ),
-                            content: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "نام میومنی ات را بنویس",
-                                  style: PersianFonts.Samim,
-                                ),
-                              ],
-                            ),
-                          );
-                        });
-                  } else {
-                    createuser();
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => ChatApp()));
-                  }
-                },
               ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 25, left: 10, top: 10),
+            child: TextField(
+              controller: namecontroller,
+              maxLength: 14,
+              decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20)),
+                  filled: true,
+                  fillColor: const Color.fromARGB(255, 235, 80, 42)),
             ),
-          ],
-        ),
-      ]),
+          ),
+          const SizedBox(
+            height: 125,
+          ),
+          SizedBox(
+            height: 50,
+            width: 200,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(150, 197, 45, 32),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Text(
+                'ورود',
+                style: PersianFonts.Samim.copyWith(fontSize: 20),
+              ),
+              onPressed: () {
+                if (namecontroller.text == "") {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "گزازی کردی",
+                                style: TextStyle(
+                                    fontFamily: "AFSANEH", fontSize: 20),
+                              ),
+                            ],
+                          ),
+                          content: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "نام میومنی ات را بنویس",
+                                style: PersianFonts.Samim,
+                              ),
+                            ],
+                          ),
+                        );
+                      });
+                } else {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) => ChatApp()));
+                }
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -247,13 +190,14 @@ class _ChatAppState extends State<ChatApp> {
   }
 
   void Add(value) {
-    messages.add(value["text"]);
+    setState(() {
+      messages.add(value["text"]);
+    });
   }
 
   void startLiveQuery() async {
     var sub = await liveQuery.client.subscribe(queryMessage);
     sub.on(LiveQueryEvent.create, (value) {
-      print(value);
       Add(value);
       //
     });
@@ -263,31 +207,33 @@ class _ChatAppState extends State<ChatApp> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Column(
         children: [
           const SizedBox(
-            height: 12,
+            height: 40,
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const SizedBox(
-                width: 660,
-              ),
               SizedBox(
                 child: Image.asset("assets/MiumenAbad.png"),
                 width: 260,
                 height: 107,
               ),
               const SizedBox(
-                width: 20,
+                width: 30,
               ),
             ],
           ),
           Stack(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                // mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const SizedBox(
+                    width: 50,
+                  ),
                   Container(
                     decoration: BoxDecoration(
                         border: Border.all(
@@ -297,20 +243,27 @@ class _ChatAppState extends State<ChatApp> {
                             topLeft: Radius.circular(20)),
                         color: Color.fromARGB(50, 0, 0, 0)),
                     height: 50,
-                    width: 800,
+                    width: size.width - 100,
                   ),
                 ],
               ),
               Column(
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          width: 2, color: Color.fromARGB(150, 0, 0, 0)),
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                    ),
-                    height: 400,
-                    width: 800,
+                  Row(
+                    children: [
+                      const SizedBox(
+                        width: 50,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              width: 2, color: Color.fromARGB(150, 0, 0, 0)),
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                        ),
+                        height: size.height / 1.5,
+                        width: size.width - 100,
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 10,
@@ -318,18 +271,28 @@ class _ChatAppState extends State<ChatApp> {
                   Row(
                     children: [
                       const SizedBox(
-                        width: 135,
+                        width: 50,
                       ),
                       SizedBox(
-                        width: 660,
-                        height: 50,
+                        width: size.width - 250,
+                        height: size.height / 15,
                         child: TextField(
                           controller: meesagecontroller,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(18)),
                               filled: true,
-                              fillColor: Color.fromARGB(255, 255, 146, 55)),
+                              fillColor:
+                                  const Color.fromARGB(255, 255, 146, 55)),
+                          onSubmitted: (value) async {
+                            String username = namecontroller.text;
+                            var msg = ParseObject('Message');
+                            msg..set('sender', username);
+                            msg..set('text', meesagecontroller.text);
+                            await msg.save();
+                            meesagecontroller.text = "";
+                          },
+                          textInputAction: TextInputAction.search,
                         ),
                       ),
                       const SizedBox(
@@ -364,8 +327,7 @@ class _ChatAppState extends State<ChatApp> {
                         iconSize: 35,
                         color: Colors.black,
                         onPressed: () async {
-                          var box = await Hive.openBox('Data');
-                          String username = box.get("username");
+                          String username = namecontroller.text;
                           var msg = ParseObject('Message');
                           msg..set('sender', username);
                           msg..set('text', meesagecontroller.text);
@@ -383,13 +345,11 @@ class _ChatAppState extends State<ChatApp> {
                     height: 50,
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(
-                        width: 139,
-                      ),
                       SizedBox(
-                        width: 799,
-                        height: 340,
+                        width: size.width - 100,
+                        height: size.height / 1.75,
                         child: ListView.builder(
                             itemCount: messages.length,
                             scrollDirection: Axis.vertical,
@@ -398,7 +358,7 @@ class _ChatAppState extends State<ChatApp> {
                               return Align(
                                 alignment: Alignment.centerRight,
                                 child: Padding(
-                                  padding: EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.all(8.0),
                                   child: Container(
                                     width: 100,
                                     height: 50,
