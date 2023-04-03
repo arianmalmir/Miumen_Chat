@@ -1,29 +1,8 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:persian_fonts/persian_fonts.dart';
 import 'package:window_size/window_size.dart' as window_size;
-
-final List<String> messages = [];
-final List<String> senders = [];
-TextEditingController namecontroller = TextEditingController();
-
-checkMessage() async {
-  final QueryBuilder<ParseObject> parseQuery =
-      QueryBuilder<ParseObject>(ParseObject('Message'));
-
-  final ParseResponse apiResponse = await parseQuery.query();
-
-  if (apiResponse.success && apiResponse.results != null) {
-    for (var o in apiResponse.results!) {
-      final jsonData = (o as ParseObject).toString();
-      final parsedJson = jsonDecode(jsonData);
-      messages.add(parsedJson["text"]);
-      senders.add(parsedJson["sender"]);
-    }
-  }
-}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,15 +16,6 @@ void main() async {
   }
 
   WidgetsFlutterBinding.ensureInitialized();
-
-  const keyApplicationId = '56q6hLG0Qj4vjM0RzqIET035xJ9IqWsIWbrV7imM';
-  const keyClientKey = 'Illw3SUbeAi3Z6KIjgs7dbZeGzsG1pR0VoN32yoQ';
-  const keyParseServerUrl = 'https://parseapi.back4app.com';
-
-  await Parse().initialize(keyApplicationId, keyParseServerUrl,
-      clientKey: keyClientKey,
-      liveQueryUrl: 'https://miumenchat2o.b4a.io',
-      debug: true);
 
   runApp(const MaterialApp(
     home: LoginApp(),
@@ -65,102 +35,104 @@ class _LoginAppState extends State<LoginApp> {
     Size sizescreen = MediaQuery.of(context).size;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 50,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+        resizeToAvoidBottomInset: false,
+        body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
             children: [
+              const SizedBox(
+                height: 50,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 350,
+                    child: Image.asset("assets/miumenah.png"),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "!خوش آمدید به میومن الچت ",
+                    style: PersianFonts.Samim.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(right: 25, left: 10, top: 10),
+                child: TextField(
+                  controller: namecontroller,
+                  maxLength: 14,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                      filled: true,
+                      fillColor: const Color.fromARGB(255, 235, 80, 42)),
+                ),
+              ),
+              const SizedBox(
+                height: 125,
+              ),
               SizedBox(
-                width: 350,
-                child: Image.asset("assets/miumenah.png"),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "!خوش آمدید به میومن الچت ",
-                style: PersianFonts.Samim.copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
+                height: 50,
+                width: 200,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(150, 197, 45, 32),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    'ورود',
+                    style: PersianFonts.Samim.copyWith(fontSize: 20),
+                  ),
+                  onPressed: () {
+                    if (namecontroller.text == "") {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Text(
+                                    "گزازی کردی",
+                                    style: TextStyle(
+                                        fontFamily: "AFSANEH", fontSize: 20),
+                                  ),
+                                ],
+                              ),
+                              content: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Text(
+                                    "نام میومنی ات را بنویس",
+                                    style: PersianFonts.Samim,
+                                  ),
+                                ],
+                              ),
+                            );
+                          });
+                    } else {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => ChatApp()));
+                    }
+                  },
                 ),
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 25, left: 10, top: 10),
-            child: TextField(
-              controller: namecontroller,
-              maxLength: 14,
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20)),
-                  filled: true,
-                  fillColor: const Color.fromARGB(255, 235, 80, 42)),
-            ),
-          ),
-          const SizedBox(
-            height: 125,
-          ),
-          SizedBox(
-            height: 50,
-            width: 200,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(150, 197, 45, 32),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Text(
-                'ورود',
-                style: PersianFonts.Samim.copyWith(fontSize: 20),
-              ),
-              onPressed: () {
-                if (namecontroller.text == "") {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "گزازی کردی",
-                                style: TextStyle(
-                                    fontFamily: "AFSANEH", fontSize: 20),
-                              ),
-                            ],
-                          ),
-                          content: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "نام میومنی ات را بنویس",
-                                style: PersianFonts.Samim,
-                              ),
-                            ],
-                          ),
-                        );
-                      });
-                } else {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => ChatApp()));
-                }
-              },
-            ),
-          ),
-        ],
-      ),
-    );
+        ));
   }
 }
 
@@ -207,167 +179,155 @@ class _ChatAppState extends State<ChatApp> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 40,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+        resizeToAvoidBottomInset: false,
+        body: SingleChildScrollView(
+          // physics: const BouncingScrollPhysics(),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
             children: [
-              SizedBox(
-                child: Image.asset("assets/MiumenAbad.png"),
-                width: 260,
-                height: 107,
-              ),
               const SizedBox(
-                width: 30,
+                height: 40,
               ),
-            ],
-          ),
-          Stack(
-            children: [
               Row(
-                // mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const SizedBox(
-                    width: 50,
+                  SizedBox(
+                    child: Image.asset("assets/MiumenAbad.png"),
+                    width: 260,
+                    height: 107,
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            width: 2, color: Color.fromARGB(150, 0, 0, 0)),
-                        borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(20),
-                            topLeft: Radius.circular(20)),
-                        color: Color.fromARGB(50, 0, 0, 0)),
-                    height: 50,
-                    width: size.width - 100,
+                  const SizedBox(
+                    width: 30,
                   ),
                 ],
               ),
-              Column(
+              Stack(
                 children: [
                   Row(
+                    // mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const SizedBox(
                         width: 50,
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          border: Border.all(
-                              width: 2, color: Color.fromARGB(150, 0, 0, 0)),
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                        ),
-                        height: size.height / 1.5,
+                            border: Border.all(
+                                width: 2,
+                                color: const Color.fromARGB(150, 0, 0, 0)),
+                            borderRadius: const BorderRadius.only(
+                                topRight: Radius.circular(20),
+                                topLeft: Radius.circular(20)),
+                            color: const Color.fromARGB(50, 0, 0, 0)),
+                        height: 50,
                         width: size.width - 100,
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
+                  Column(
                     children: [
-                      const SizedBox(
-                        width: 50,
-                      ),
-                      SizedBox(
-                        width: size.width - 250,
-                        height: size.height / 15,
-                        child: TextField(
-                          controller: meesagecontroller,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(18)),
-                              filled: true,
-                              fillColor:
-                                  const Color.fromARGB(255, 255, 146, 55)),
-                          onSubmitted: (value) async {
-                            String username = namecontroller.text;
-                            var msg = ParseObject('Message');
-                            msg..set('sender', username);
-                            msg..set('text', meesagecontroller.text);
-                            await msg.save();
-                            meesagecontroller.text = "";
-                          },
-                          textInputAction: TextInputAction.search,
-                        ),
+                      Row(
+                        children: [
+                          const SizedBox(
+                            width: 50,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 2,
+                                  color: const Color.fromARGB(150, 0, 0, 0)),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(20)),
+                            ),
+                            height: size.height / 1.5,
+                            width: size.width - 100,
+                          ),
+                        ],
                       ),
                       const SizedBox(
-                        width: 10,
+                        height: 10,
                       ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: SizedBox(
-                          width: 50,
-                          height: 46,
-                          child: Image.asset(
-                            'assets/moz.png',
-                            fit: BoxFit.cover,
+                      Row(
+                        children: [
+                          const SizedBox(
+                            width: 50,
                           ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: SizedBox(
-                          width: 47,
-                          height: 50,
-                          child: Image.asset(
-                            'assets/miumen.png',
-                            fit: BoxFit.cover,
+                          SizedBox(
+                            width: size.width - 250,
+                            height: size.height / 15,
+                            child: TextField(
+                              controller: meesagecontroller,
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(18)),
+                                  filled: true,
+                                  fillColor:
+                                      const Color.fromARGB(255, 255, 146, 55)),
+                              onSubmitted: (value) async {
+                              },
+                              textInputAction: TextInputAction.send,
+                            ),
                           ),
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(
-                          Icons.send,
-                        ),
-                        iconSize: 35,
-                        color: Colors.black,
-                        onPressed: () async {
-                          String username = namecontroller.text;
-                          var msg = ParseObject('Message');
-                          msg..set('sender', username);
-                          msg..set('text', meesagecontroller.text);
-                          await msg.save();
-                          meesagecontroller.text = "";
-                        },
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          GestureDetector(
+                            onTap: () {},
+                            child: SizedBox(
+                              width: 50,
+                              height: 46,
+                              child: Image.asset(
+                                'assets/moz.png',
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {},
+                            child: SizedBox(
+                              width: 47,
+                              height: 50,
+                              child: Image.asset(
+                                'assets/miumen.png',
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.send,
+                            ),
+                            iconSize: 35,
+                            color: Colors.black,
+                            onPressed: () async {
+                              if (meesagecontroller.text != "") {
+
+                              }
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-              Column(
-                children: [
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Column(
                     children: [
-                      SizedBox(
-                        width: size.width - 100,
-                        height: size.height / 1.75,
-                        child: ListView.builder(
-                            itemCount: messages.length,
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return Align(
-                                alignment: Alignment.centerRight,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    width: 100,
-                                    height: 50,
-                                    color: Colors.amber,
-                                    child: Center(child: Text(messages[index])),
-                                  ),
-                                ),
-                              );
-                            }),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: size.width - 100,
+                            height: size.height / 1.75,
+                            child: ListView.builder(
+                                itemCount: messages.length,
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) {
+                                  return OutBubble(message: messages[index]);
+                                }),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -375,8 +335,39 @@ class _ChatAppState extends State<ChatApp> {
               ),
             ],
           ),
-        ],
-      ),
+        ));
+  }
+}
+
+class OutBubble extends StatelessWidget {
+  final String message;
+  const OutBubble({Key? key, required this.message}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Flexible(
+          child: Container(
+            padding: const EdgeInsets.all(15),
+            margin: const EdgeInsets.only(right: 10, bottom: 5),
+            decoration: const BoxDecoration(
+              color: Colors.amber,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(19),
+                bottomLeft: Radius.circular(19),
+                bottomRight: Radius.circular(19),
+              ),
+            ),
+            child: Text(
+              message,
+              style: const TextStyle(color: Colors.black, fontSize: 15),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
