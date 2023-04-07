@@ -2,22 +2,16 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:persian_fonts/persian_fonts.dart';
-import 'package:window_size/window_size.dart' as window_size;
+
+final List<String> messages = [];
+final List<String> senders = [];
+TextEditingController namecontroller = TextEditingController();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  window_size.getWindowInfo();
-  final frame = Rect.fromLTWH(0, 0, 950, 690);
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-    window_size.setWindowTitle('Miumen chat');
-    window_size.setWindowFrame(frame);
-    window_size.setWindowMinSize(const Size(10, 10));
-    window_size.setWindowMaxSize(const Size(2000, 2000));
-  }
-
-  WidgetsFlutterBinding.ensureInitialized();
 
   runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
     home: LoginApp(),
   ));
 }
@@ -106,7 +100,7 @@ class _LoginAppState extends State<LoginApp> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: const [
                                   Text(
-                                    "گزازی کردی",
+                                    "نام کاربری",
                                     style: TextStyle(
                                         fontFamily: "AFSANEH", fontSize: 20),
                                   ),
@@ -116,7 +110,7 @@ class _LoginAppState extends State<LoginApp> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: const [
                                   Text(
-                                    "نام میومنی ات را بنویس",
+                                    "نام کاربری را بنویسید",
                                     style: PersianFonts.Samim,
                                   ),
                                 ],
@@ -177,155 +171,303 @@ class _ChatAppState extends State<ChatApp> {
 
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
+    final MediaQueryData media = MediaQuery.of(context);
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        body: SingleChildScrollView(
-          // physics: const BouncingScrollPhysics(),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              const SizedBox(
-                height: 40,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+        body: Padding(
+            padding: media.viewInsets,
+            child: SingleChildScrollView(
+              // physics: const BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(
-                    child: Image.asset("assets/MiumenAbad.png"),
-                    width: 260,
-                    height: 107,
-                  ),
                   const SizedBox(
-                    width: 30,
+                    height: 40,
                   ),
-                ],
-              ),
-              Stack(
-                children: [
                   Row(
-                    // mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      const SizedBox(
-                        width: 50,
+                      SizedBox(
+                        child: Image.asset("assets/MiumenAbad.png"),
+                        width: 260,
+                        height: 107,
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 2,
-                                color: const Color.fromARGB(150, 0, 0, 0)),
-                            borderRadius: const BorderRadius.only(
-                                topRight: Radius.circular(20),
-                                topLeft: Radius.circular(20)),
-                            color: const Color.fromARGB(50, 0, 0, 0)),
-                        height: 50,
-                        width: size.width - 100,
+                      const SizedBox(
+                        width: 30,
                       ),
                     ],
                   ),
-                  Column(
+                  Stack(
                     children: [
                       Row(
+                        // mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const SizedBox(
                             width: 50,
                           ),
                           Container(
                             decoration: BoxDecoration(
-                              border: Border.all(
-                                  width: 2,
-                                  color: const Color.fromARGB(150, 0, 0, 0)),
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(20)),
-                            ),
-                            height: size.height / 1.5,
+                                border: Border.all(
+                                    width: 2,
+                                    color: const Color.fromARGB(150, 0, 0, 0)),
+                                borderRadius: const BorderRadius.only(
+                                    topRight: Radius.circular(20),
+                                    topLeft: Radius.circular(20)),
+                                color: const Color.fromARGB(50, 0, 0, 0)),
+                            height: 50,
                             width: size.width - 100,
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
+                      Column(
                         children: [
-                          const SizedBox(
-                            width: 50,
-                          ),
-                          SizedBox(
-                            width: size.width - 250,
-                            height: size.height / 15,
-                            child: TextField(
-                              controller: meesagecontroller,
-                              decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(18)),
-                                  filled: true,
-                                  fillColor:
-                                      const Color.fromARGB(255, 255, 146, 55)),
-                              onSubmitted: (value) async {
-                              },
-                              textInputAction: TextInputAction.send,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          GestureDetector(
-                            onTap: () {},
-                            child: SizedBox(
-                              width: 50,
-                              height: 46,
-                              child: Image.asset(
-                                'assets/moz.png',
-                                fit: BoxFit.cover,
+                          Row(
+                            children: [
+                              const SizedBox(
+                                width: 50,
                               ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {},
-                            child: SizedBox(
-                              width: 47,
-                              height: 50,
-                              child: Image.asset(
-                                'assets/miumen.png',
-                                fit: BoxFit.cover,
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 2,
+                                      color:
+                                          const Color.fromARGB(150, 0, 0, 0)),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(20)),
+                                ),
+                                height: size.height / 1.5,
+                                width: size.width - 100,
                               ),
-                            ),
+                            ],
                           ),
-                          IconButton(
-                            icon: const Icon(
-                              Icons.send,
-                            ),
-                            iconSize: 35,
-                            color: Colors.black,
-                            onPressed: () async {
-                              if (meesagecontroller.text != "") {
-
-                              }
-                            },
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              const SizedBox(
+                                width: 50,
+                              ),
+                              SizedBox(
+                                width: size.width - 250,
+                                height: size.height / 15,
+                                child: TextField(
+                                  controller: meesagecontroller,
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(18)),
+                                      filled: true,
+                                      fillColor: const Color.fromARGB(
+                                          255, 255, 146, 55)),
+                                  onSubmitted: (value) async {
+                                    String username = namecontroller.text;
+                                    var msg = ParseObject('Message');
+                                    msg..set('sender', username);
+                                    msg..set('text', meesagecontroller.text);
+                                    await msg.save();
+                                    meesagecontroller.text = "";
+                                  },
+                                  textInputAction: TextInputAction.send,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              GestureDetector(
+                                onTap: () {},
+                                child: SizedBox(
+                                  width: 50,
+                                  height: 46,
+                                  child: Image.asset(
+                                    'assets/moz.png',
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {},
+                                child: SizedBox(
+                                  width: 47,
+                                  height: 50,
+                                  child: Image.asset(
+                                    'assets/miumen.png',
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.send,
+                                ),
+                                iconSize: 35,
+                                color: Colors.black,
+                                onPressed: () async {
+                                  if (meesagecontroller.text != "") {
+                                    String username = namecontroller.text;
+                                    var msg = ParseObject('Message');
+                                    msg..set('sender', username);
+                                    msg..set('text', meesagecontroller.text);
+                                    await msg.save();
+                                    meesagecontroller.text = "";
+                                  }
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      const SizedBox(
-                        height: 50,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      Column(
                         children: [
-                          SizedBox(
-                            width: size.width - 100,
-                            height: size.height / 1.75,
-                            child: ListView.builder(
-                                itemCount: messages.length,
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  return OutBubble(message: messages[index]);
-                                }),
+                          const SizedBox(
+                            height: 50,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: size.width - 100,
+                                height: size.height / 1.75,
+                                child: ListView.builder(
+                                    itemCount: messages.length,
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) {
+                                      return Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text("گزارش پیام",
+                                                              style: PersianFonts
+                                                                      .Sahel
+                                                                  .copyWith(
+                                                                      fontSize:
+                                                                          20)),
+                                                        ],
+                                                      ),
+                                                      content: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          ElevatedButton(
+                                                            onPressed: () {
+                                                              reportMeesage(
+                                                                  messages[
+                                                                      index]);
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            style:
+                                                                ElevatedButton
+                                                                    .styleFrom(
+                                                              backgroundColor:
+                                                                  const Color
+                                                                          .fromARGB(
+                                                                      150,
+                                                                      197,
+                                                                      45,
+                                                                      32),
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                              ),
+                                                            ),
+                                                            child: Text(
+                                                              'گزارش شود',
+                                                              style: PersianFonts
+                                                                      .Samim
+                                                                  .copyWith(
+                                                                      fontSize:
+                                                                          20),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 30,
+                                                          ),
+                                                          ElevatedButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            style:
+                                                                ElevatedButton
+                                                                    .styleFrom(
+                                                              backgroundColor:
+                                                                  const Color
+                                                                          .fromARGB(
+                                                                      149,
+                                                                      21,
+                                                                      172,
+                                                                      196),
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                              ),
+                                                            ),
+                                                            child: Text(
+                                                              'لغو',
+                                                              style: PersianFonts
+                                                                      .Samim
+                                                                  .copyWith(
+                                                                      fontSize:
+                                                                          20),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  });
+                                            },
+                                            child: Container(
+                                              padding: const EdgeInsets.all(15),
+                                              margin: const EdgeInsets.only(
+                                                  right: 10, bottom: 5),
+                                              decoration: const BoxDecoration(
+                                                color: Colors.amber,
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(19),
+                                                  bottomLeft:
+                                                      Radius.circular(19),
+                                                  bottomRight:
+                                                      Radius.circular(19),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                messages[index],
+                                                style:
+                                                    PersianFonts.Samim.copyWith(
+                                                        color: Colors.black,
+                                                        fontSize: 15),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -333,46 +475,6 @@ class _ChatAppState extends State<ChatApp> {
                   ),
                 ],
               ),
-            ],
-          ),
-        ));
+            )));
   }
 }
-
-class OutBubble extends StatelessWidget {
-  final String message;
-  const OutBubble({Key? key, required this.message}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Flexible(
-          child: Container(
-            padding: const EdgeInsets.all(15),
-            margin: const EdgeInsets.only(right: 10, bottom: 5),
-            decoration: const BoxDecoration(
-              color: Colors.amber,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(19),
-                bottomLeft: Radius.circular(19),
-                bottomRight: Radius.circular(19),
-              ),
-            ),
-            child: Text(
-              message,
-              style: const TextStyle(color: Colors.black, fontSize: 15),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// یه روز آقا خرگوشه
-// رفت خونه ی اقا میومنه
-// میومنه پرید تو سوراخ
-// خرگوشه گفت آخ
