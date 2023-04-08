@@ -1,7 +1,7 @@
 const Parse = require('parse/node');
 
-Parse.initialize("lbqXDeDB2sKLcrZANETYdqBuT0jX5XVGQAvYeqyf", "8BID8SAm4u9J2jQxJOsahy9XCxSJe8OhTY8grKIZ"); //PASTE HERE YOUR Back4App APPLICATION ID AND YOUR JavaScript KEY
-Parse.serverURL = "https://parseapi.back4app.com/";
+Parse.initialize("", ""); //PASTE HERE YOUR Back4App APPLICATION ID AND YOUR JavaScript KEY
+Parse.serverURL = "";
 
 const sender = 'miumenak'
 
