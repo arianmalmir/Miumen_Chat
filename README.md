@@ -1,7 +1,7 @@
 # Miumen_Chat
 An online chat app! 
 
-You Can download it from: https://cafebazaar.ir/app/com.example.miumen_chat
+You can Download apk from: https://cafebazaar.ir/app/com.example.miumen_chat
 
 <br />
 
