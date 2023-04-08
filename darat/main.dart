@@ -1,14 +1,46 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:persian_fonts/persian_fonts.dart';
 
 final List<String> messages = [];
 final List<String> senders = [];
 TextEditingController namecontroller = TextEditingController();
 
+reportMeesage(String message) async {
+  var rp = ParseObject('Report');
+  rp..set('msg', message);
+  await rp.save();
+}
+
+checkMessage() async {
+  final QueryBuilder<ParseObject> parseQuery =
+      QueryBuilder<ParseObject>(ParseObject('Message'));
+
+  final ParseResponse apiResponse = await parseQuery.query();
+
+  if (apiResponse.success && apiResponse.results != null) {
+    for (var o in apiResponse.results!) {
+      final jsonData = (o as ParseObject).toString();
+      final parsedJson = jsonDecode(jsonData);
+      messages.add(parsedJson["text"]);
+      senders.add(parsedJson["sender"]);
+    }
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  const keyApplicationId = '';
+  const keyClientKey = '';
+  const keyParseServerUrl = '';
+
+  await Parse().initialize(keyApplicationId, keyParseServerUrl,
+      clientKey: keyClientKey,
+      liveQueryUrl: '',
+      debug: true);
 
   runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
